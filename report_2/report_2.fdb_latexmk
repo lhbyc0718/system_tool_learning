@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1787736672.27146 "report_2.xdv" "report_2.pdf" "report_2" 1787736674.87476 0
-  "report_2.xdv" 1787736672.1722 155136 753484ba04d98e4e05248f293fc0675d "xelatex"
+["xdvipdfmx"] 1787749237.30412 "report_2.xdv" "report_2.pdf" "report_2" 1787749240.4247 0
+  "report_2.xdv" 1787749237.20399 160200 97acf98187d484c0e957ad7ad8434003 "xelatex"
   (generated)
   "report_2.pdf"
   (rewritten before read)
-["xelatex"] 1787736669.97743 "report_2.tex" "report_2.xdv" "report_2" 1787736674.87337 0
+["xelatex"] 1787749235.81776 "report_2.tex" "report_2.xdv" "report_2" 1787749240.42199 0
   "/etc/texmf/web2c/texmf.cnf" 1787562536.65176 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
@@ -108,6 +108,7 @@
   "/usr/share/texmf/tex/latex/CJK/CJKfntef.sty" 1634405102 12851 25a9b5cc006609feb5c9a20ce24a5392 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1741904018 41538 c016915c1d51223b6dbbfe27341748a8 ""
   "/var/lib/texmf/web2c/xetex/xelatex.fmt" 1787574442 4211107 617e7797e2daf82e1fedb81c99a3add9 ""
+  "git_commits.png" 1787738129.06657 47059 e9cd81d2a62c7430edf5325a447afdd2 ""
   "p01.png" 1787735401.92841 65059 6ac86a659930977b538333e862a3e75f ""
   "p02_1.png" 1787735423.31172 76840 7e237498805d747cc3613b0a5d983de1 ""
   "p02_2.png" 1787735441.05931 49869 bbd4ae2a98f26d4033c9ff66715c4233 ""
@@ -133,9 +134,9 @@
   "q08_ftest3.png" 1787682644.55815 66365 32453c90efe6718a0b6545be2b870232 ""
   "q08_test2.png" 1787682629.4575 80658 b00c186d75e11b8ce91c5b3acbc3c425 ""
   "q08_ttest1.png" 1787682602.12636 103968 5d2c114c27b92b8bffa57eebf6ae3c33 ""
-  "report_2.aux" 1787736672.1722 2872 4c31ecdbf06d3f14c4ad65c7da5c433c "xelatex"
-  "report_2.out" 1787736672.1722 2019 6ca9ee711cdc718ea3b1bd82267ab6a4 "xelatex"
-  "report_2.tex" 1787736667.5642 22807 961b4835f732389315d5c29d6eee9c31 ""
+  "report_2.aux" 1787749237.19999 3210 09e696204092ac5322a246a68faaf132 "xelatex"
+  "report_2.out" 1787749237.20399 2140 bc21b2c1f8a2365b60283548efe34a4f "xelatex"
+  "report_2.tex" 1787749230.32799 23691 78fb101bc7aa2d8dcfd4f513f37fa31c ""
   (generated)
   "report_2.aux"
   "report_2.log"

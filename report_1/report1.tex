@@ -495,32 +495,4 @@ cat ~/.gitignore_global
     \label{fig:git_commits}
 \end{figure}
 
-\subsection*{常用 Git 命令（本次使用）}
-\begin{lstlisting}[language=bash]
-# 克隆仓库
-git clone https://github.com/lhbyc0718/system_tool_learning.git
-
-# 查看状态
-git status
-
-# 添加改动（按题目分批次添加）
-git add q01/
-git commit -m "完成第1题：含空格文件名批量整理"
-
-git add q02/
-git commit -m "完成第2题：随机访问日志统计"
-
-git add q03/
-git commit -m "完成第3题：制造并解决合并冲突"
-
-git add q04/
-git commit -m "完成第4题：修复并构建技术说明"
-
-# 推送至远程
-git push origin main
-
-# 查看提交历史（图形化）
-git log --oneline --graph --all
-\end{lstlisting}
-
 \end{document}

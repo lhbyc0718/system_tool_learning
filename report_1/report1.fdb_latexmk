@@ -1,10 +1,10 @@
 # Fdb version 4
-["xdvipdfmx"] 1787738439.72242 "report1.xdv" "report1.pdf" "report1" 1787738442.0843 0
-  "report1.xdv" 1787738439.63991 241004 d409e6f662c175e057283a2a8b007cc8 "xelatex"
+["xdvipdfmx"] 1787749031.25952 "report1.xdv" "report1.pdf" "report1" 1787749033.49155 0
+  "report1.xdv" 1787749031.184 217492 09823ef5e18662048cebd9747e385f17 "xelatex"
   (generated)
   "report1.pdf"
   (rewritten before read)
-["xelatex"] 1787738437.85357 "report1.tex" "report1.xdv" "report1" 1787738442.08167 0
+["xelatex"] 1787749029.65529 "report1.tex" "report1.xdv" "report1" 1787749033.49023 0
   "/etc/texmf/web2c/texmf.cnf" 1787562536.65176 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
@@ -128,9 +128,9 @@
   "q03.png" 1787580807.63313 134389 d33c7dd06a9b819221325cfd66be2eb2 ""
   "q04_code.png" 1787580675.98483 125441 fdba50e5780971ed79970dddb8827695 ""
   "q04_effort.png" 1787580724.70286 26208 354e8d8fa6e6004a4e66532303bb67dc ""
-  "report1.aux" 1787738439.63592 5496 e9e29a7ace1d5ac635068ed4dcdb8817 "xelatex"
-  "report1.out" 1787738439.63991 2049 36582e7c21373d99fefbe5f14d616056 "xelatex"
-  "report1.tex" 1787738427.32392 21938 117ed552ca5c85d00f628b3dc1c8a96b ""
+  "report1.aux" 1787749031.18 5496 31dc8b2b51f043a2f2bb6687cd4fb479 "xelatex"
+  "report1.out" 1787749031.184 2049 36582e7c21373d99fefbe5f14d616056 "xelatex"
+  "report1.tex" 1787748971.27201 21280 a41b88cdd89a27a835d217c1426bfba6 ""
   (generated)
   "report1.aux"
   "report1.log"

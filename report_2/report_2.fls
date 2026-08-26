@@ -294,6 +294,9 @@ INPUT ./p122.png
 INPUT ./p123.png
 INPUT ./p123.png
 INPUT ./p123.png
+INPUT ./git_commits.png
+INPUT ./git_commits.png
+INPUT ./git_commits.png
 INPUT report_2.aux
 INPUT ./report_2.out
 INPUT ./report_2.out
