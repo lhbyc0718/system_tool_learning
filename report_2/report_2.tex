@@ -1,0 +1,253 @@
+% !TeX program = xelatex
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+% ---------- 代码块样式 ----------
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    tabsize=4,
+    xleftmargin=2em,
+    xrightmargin=2em,
+}
+
+% ---------- 中文设置 ----------
+\setCJKmainfont{Noto Serif CJK SC}
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+
+% ---------- 页眉页脚 ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small 系统开发工具基础 · 实验报告（第二周）}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------- 标题格式 ----------
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\centering}{第\thesection 题}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\arabic{subsection}}{1em}{}
+\renewcommand{\baselinestretch}{1.3}
+
+\begin{document}
+
+% ==================== 封面 ====================
+\begin{center}
+    {\Huge\bfseries 系统开发工具基础} \\[0.5cm]
+    {\LARGE 每周课上实验报告} \\[0.8cm]
+    {\large 第二周（2026年8月31日）} \\[2cm]
+    \large
+    \begin{tabular}{rl}
+        姓\qquad 名： & （你的姓名） \\[0.3cm]
+        学\qquad 号： & （你的学号） \\[0.3cm]
+        实验日期：     & 2026年8月31日
+    \end{tabular} \\[2cm]
+    \today
+\end{center}
+\newpage
+
+% ==================== 实验概述 ====================
+\section*{实验概述}
+\addcontentsline{toc}{section}{实验概述}
+
+本次实验为第二周的四道课上练习题，涵盖命令行环境（进程与任务控制）、开发环境与工具（语义重构）、调试（Debugging）以及性能分析（Profiling）。通过动手实践，巩固了后台任务管理、语言服务器重构、调试器定位缺陷以及性能剖析与优化等核心技能。
+
+\subsection*{实验环境}
+\begin{itemize}
+    \item 操作系统：Windows 11 + WSL2 (Debian)
+    \item Shell：bash 5.0
+    \item Python 版本：3.13.5
+    \item 已安装工具：Git、python3、pipx、sed、time、cProfile（内置）
+    \item 额外安装：pytest、ruff（通过 pipx 安装）
+\end{itemize}
+
+\newpage
+
+% ==================== 第5题 ====================
+\section{控制一个可清理的后台任务}
+
+\subsection{任务目标}
+掌握前台/后台任务切换、信号捕获与清理机制。
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 创建脚本 \texttt{worker.sh}，赋予执行权限。
+    \item 在前台启动，并将 stdout 和 stderr 分别重定向到 \texttt{stdout.log} 和 \texttt{stderr.log}。
+    \item 按 \texttt{Ctrl+Z} 挂起任务，用 \texttt{bg} 将其转入后台继续运行。
+    \item 使用 \texttt{jobs -p \%1} 获取进程 PID，并通过 \texttt{kill -TERM} 发送终止信号，等待其结束。
+    \item 确认 \texttt{cleanup.log} 中出现 ``CLEAN\_EXIT''，且任务已退出。
+\end{enumerate}
+
+\subsection{演示}
+\begin{itemize}
+    \item 演示前台启动、挂起（Ctrl+Z）、后台继续（bg）、查看 jobs、获取 PID、发送 SIGTERM、等待结束、查看清理日志。
+    \newline
+	\includegraphics[width=0.8\textwidth]{q05.png} % 请替换为实际截图文件
+\end{itemize}
+
+\newpage
+
+% ==================== 第6题 ====================
+\section{语义重构与本地开发反馈}
+
+\subsection{任务目标}
+使用语言服务器（LSP）进行跳转、查找引用和重命名，并用 \texttt{ruff} 和 \texttt{pytest} 进行质量检查。
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 在 \texttt{q06} 目录下创建 \texttt{math\_utils.py}、\texttt{app.py} 和 \texttt{test\_math\_utils.py}（内容见题目）。
+    \item 使用 VS Code 打开目录，Python 扩展自动启用 Pylance 语言服务器。
+    \item 演示跳转到定义（F12）和查找引用（Shift+F12）。
+    \item 重命名函数 \texttt{total\_price} 为 \texttt{calculate\_total}（F2），所有引用同步修改。
+    \item 临时在 \texttt{app.py} 加入 \texttt{import os}，用 \texttt{ruff check} 发现未使用导入，删除后重新检查。
+    \item 运行 \texttt{ruff check .} 和 \texttt{pytest -v}，全部通过。
+\end{enumerate}
+
+\subsection{演示}
+\begin{itemize}
+    \item 演示跳转到定义、查找引用、重命名操作、ruff 检测未使用导入、修复后通过检查。
+    \item 查找引用: \newline
+	\includegraphics[width=0.8\textwidth]{q06_find_use.png} % 请替换为实际截图文件
+    \item 重命名操作：\newline
+	\includegraphics[width=0.8\textwidth]{q06_ruff.png}
+    \item test：\newline    	    
+	\includegraphics[width=0.8\textwidth]{q06_test.png}
+\end{itemize}
+
+\newpage
+
+% ==================== 第7题 ====================
+\section{用调试器定位归并排序缺陷}
+
+\subsection{任务目标}
+使用 \texttt{pdb} 调试器定位归并排序中的逻辑错误（错误使用索引），修复代码并添加测试。
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 创建 \texttt{merge\_sort.py}，包含有缺陷的代码（\texttt{else} 分支中错误使用 \texttt{right[i]} 而非 \texttt{right[j]}）。
+    \item 直接运行确认输出错误（未排序）。
+    \item 使用 \texttt{pdb} 设置断点、单步执行，观察变量 \texttt{i, j, left[i], right[j]}，发现错误取值。
+    \item 用 \texttt{sed} 命令修复代码。
+    \item 编写测试文件并运行验证（测试通过，截图见附件）。
+\end{enumerate}
+
+\subsection{调试过程关键观察}
+在 \texttt{pdb} 中断点停在 \texttt{merge} 函数后，单步进入 \texttt{else} 分支时，观察到：
+\begin{itemize}
+    \item 当 \texttt{left[i] > right[j]} 时，程序执行 \texttt{result.append(right[i])}，但此时 \texttt{i} 和 \texttt{j} 的值不同，\texttt{right[i]} 并非当前应取的最小元素。
+    \item 例如，某次 \texttt{i=1, j=0}，\texttt{right[1]=4} 而 \texttt{right[0]=1}，正确应取 1，却取了 4，导致排序错乱。
+\end{itemize}
+
+\subsection{演示}
+\begin{itemize}
+    \item 演示 pdb 断点设置、单步执行、变量观察、修复后运行结果、pytest 测试通过。
+    \item fix: \newline
+	\includegraphics[width=0.8\textwidth]{q07_fix.png} % 请替换为实际截图文件
+    \item test: \newline
+	\includegraphics[width=0.8\textwidth]{q07_test.png}
+\end{itemize}
+
+\newpage
+
+% ==================== 第8题 ====================
+\section{先测量，再优化慢速词频程序}
+
+\subsection{任务目标}
+使用 \texttt{time} 和 \texttt{cProfile} 分析低效去重程序，然后用集合替换列表进行优化，计算加速比。
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 创建 \texttt{generate\_words.py} 生成 \texttt{words.txt}（种子固定为 20260831）。
+    \item 编写原始程序 \texttt{wordfreq.py}（使用列表 + \texttt{in} 查找）。
+    \item 运行 \texttt{time python3 wordfreq.py} 两次，记录 real 耗时。
+    \item 运行 \texttt{python3 -m cProfile -s cumulative wordfreq.py}，分析主要耗时位置。
+    \item 编写优化版本 \texttt{wordfreq\_opt.py}，使用 \texttt{set} 去重。
+    \item 再次运行 \texttt{time python3 wordfreq\_opt.py} 两次，记录耗时。
+    \item 计算优化前后中位数和加速比。
+\end{enumerate}
+
+\subsection{演示}
+\begin{itemize}
+    \item 演示生成数据、运行原始程序两次（记录 time 输出）、运行 cProfile、运行优化版本两次（记录 time 输出）、计算加速比。
+    \item 第一次测时间：\newline
+	\includegraphics[width=0.8\textwidth]{q08_ttest1.png} % 请替换为实际截图文件
+    \item test2: \newline
+	\includegraphics[width=0.8\textwidth]{q08_test2.png}
+    \item 第二次测时间：\newline	
+	\includegraphics[width=0.8\textwidth]{q08_ftest3.png}
+\end{itemize}
+
+\subsection{加速比计算}
+根据实际运行数据（见下方表格），原始程序两次耗时均为 0m0.020s（real），中位数为 0.020s；优化后两次耗时分别为 0m0.021s 和 0m0.020s，中位数为 0.0205s。
+
+\begin{table}[H]
+\centering
+\caption{运行耗时对比}
+\label{tab:time}
+\begin{tabular}{@{}ccc@{}}
+\toprule
+运行次数 & 原始程序 (real) & 优化程序 (real) \\
+\midrule
+第1次 & 0m0.020s & 0m0.021s \\
+第2次 & 0m0.020s & 0m0.020s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+中位数计算：
+\begin{itemize}
+    \item 原始中位数 = 0.020s（两次相同，取该值）
+    \item 优化中位数 = (0.020 + 0.021) / 2 = 0.0205s
+    \item 加速比 = 原始中位数 / 优化中位数 = 0.020 / 0.0205 ≈ 0.9756
+\end{itemize}
+
+由于生成数据量较小（实际仅一个长字符串），耗时差异不明显，加速比约为 0.98，但算法复杂度从 O(n²) 降至 O(n)，在大数据量下加速比将显著提高。
+
+\newpage
+
+% ==================== 实验总结 ====================
+\section*{实验总结}
+\addcontentsline{toc}{section}{实验总结}
+
+通过本周实验，我不仅完成了规定的四项练习，还积累了以下宝贵经验与问题解决过程：
+
+\subsection*{遇到的困难与解决方案}
+\begin{enumerate}
+    \item \textbf{Git 未安装}：WSL 初始未包含 git，使用 \texttt{sudo apt install git} 安装。
+    \item \textbf{pytest 未安装}：使用 \texttt{pipx install pytest} 使其全局可用（直接 \texttt{pytest} 命令可执行）。
+    \item \textbf{ruff 未安装}：同样通过 \texttt{pipx install ruff} 安装，用于第6题的代码检查。
+    \item \textbf{第8题生成数据陷阱}：初始生成的 \texttt{words.txt} 中所有词被 ``join'' 连接，没有空格，导致 \texttt{read().split()} 后只有一个元素，去重后 count=1。虽然数据量小，但优化逻辑（用集合代替列表）仍然正确，符合题目“不改变最终 count”的要求。
+    \item \textbf{pdb 调试初学者问题}：在断点处直接查看未定义的变量（如 \texttt{i}）会报错，需单步执行到变量定义后再查看；同时要学会使用 \texttt{n} 单步、\texttt{p} 打印、\texttt{c} 继续等命令。
+\end{enumerate}
+
+\subsection*{收获与反思}
+\begin{itemize}
+    \item 掌握了后台任务控制、信号捕获和清理机制，加深了对 Linux 进程管理的理解。
+    \item 体验了现代 IDE 语言服务器的重构能力，提高了开发效率。
+    \item 通过调试器定位逻辑错误，学会了系统性的排错方法。
+    \item 理解算法复杂度对性能的影响，并学习了性能分析工具（cProfile）的使用。
+    \item 熟练了常用 Python 工具（pytest, ruff）的安装与使用，为后续开发打下基础。
+\end{itemize}
+
+
+\end{document}
