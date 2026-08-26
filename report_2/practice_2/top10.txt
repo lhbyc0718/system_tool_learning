@@ -1,0 +1,10 @@
+     21 nano report1.tex
+     21 latexmk -xelatex -halt-on-error report1.tex
+     19 EOF
+     17 
+     15 xdg-open report1.pdf
+     15 sudo apt update
+     15 cd ~
+     12 cd expriment_reports/report_2
+     10 latexmk -xelatex -halt-on-error report.tex
+      9 \hline

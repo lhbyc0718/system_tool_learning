@@ -1,0 +1,453 @@
+% !TeX program = xelatex
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- 设置中文字体（使用系统已安装的 Noto 字体） ----------
+\setCJKmainfont{Noto Serif CJK SC}     % 正文宋体
+\setCJKsansfont{Noto Sans CJK SC}      % 无衬线
+\setCJKmonofont{Noto Sans Mono CJK SC} % 等宽
+
+% ---------- 页眉页脚 ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small 系统开发工具基础 · 实验报告（第一周）}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------- 标题格式 ----------
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\centering}{第\thesection 题}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\arabic{subsection}}{1em}{}
+\renewcommand{\baselinestretch}{1.3}
+
+\begin{document}
+
+% ==================== 封面 ====================
+\begin{center}
+    {\Huge\bfseries 系统开发工具基础} \\[0.5cm]
+    {\LARGE 每周课上实验报告} \\[0.8cm]
+    {\large 第一周（2026年8月24日）} \\[2cm]
+    % 没有logo，注释掉 \\[1cm] % 若无 logo 可注释或删除
+    \large
+    \begin{tabular}{rl}
+        姓\qquad 名： & 李永铖 \\
+        学\qquad 号： & 25030021039 \\
+        实验日期： & 2026年8月24日
+    \end{tabular} \\[2cm]
+    \today
+\end{center}
+\newpage
+
+% ==================== 实验概述与环境 ====================
+\section*{实验概述}
+\addcontentsline{toc}{section}{实验概述}
+
+本次实验为第一周的四道课上练习题，涵盖 Shell 基础与文件系统、Shell 文本处理、Git 版本控制以及 LaTeX 文档编辑。通过动手实践，巩固了命令行操作、管道与过滤、分支合并冲突解决以及技术文档的编写与编译能力。
+
+\subsection*{实验环境}
+\begin{itemize}
+    \item 操作系统：Windows 11 + WSL2 (Debian)
+    \item Shell：bash 5.0
+    \item Git：1.9.1（初始未安装，后自行安装）
+    \item LaTeX 引擎：XeLaTeX（通过 latexmk 调用）
+    \item 中文宏包：xeCJK（需安装 texlive-lang-chinese）
+    \item 中文字体：Noto Serif CJK SC / Noto Sans CJK SC
+    \end{itemize}
+
+\subsection*{遇到的问题与解决}
+\begin{enumerate}
+    \item \textbf{Git 未安装}：WSL 初始未包含 git，使用 \texttt{sudo apt install git} 安装。
+    \item \textbf{latexmk 可用但默认调用 pdflatex}：通过命令 \texttt{latexmk -xelatex} 指定 XeLaTeX 引擎，以支持 Unicode 中文。
+    \item \textbf{中文宏包缺失（xeCJK.sty 未找到）}：安装 \texttt{texlive-lang-chinese} 后，再运行 \texttt{sudo texhash} 更新文件名数据库，即可被识别。
+    \item \textbf{中文字体配置}：系统默认无中文字体，安装 \texttt{fonts-noto-cjk} 后，在 LaTeX 中用 \verb|\setCJKmainfont{Noto Serif CJK SC}| 等命令指定。
+    \item \textbf{编译器务必选 XeLaTeX}：在 Overleaf 或本地均需切换至 XeLaTeX，否则 Unicode 字符报错。
+\end{enumerate}
+
+\newpage
+
+% ==================== 第1题 ====================
+\section{含空格文件名的批量整理}
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 创建目录 \texttt{q01} 及其子目录 \texttt{input/docs}、\texttt{input/tmp}。
+    \item 使用 \texttt{echo -e} 创建含多行内容的文件，并用 \texttt{touch} 创建空文件。
+    \item 显示绝对路径，用 \texttt{ls -la} 列出 \texttt{input} 下所有项目。
+    \item 使用 \texttt{find ... -exec cp --parents} 复制所有 \texttt{.txt} 文件到 \texttt{work/<学号>}，保留目录结构。
+    \item 修改权限：目录 750，文件 640。
+    \item 用 \texttt{find -printf} 生成 \texttt{inventory.txt}，包含相对路径和字节数。
+\end{enumerate}
+
+\subsection{核心命令}
+\begin{verbatim}
+# 创建目录与文件
+mkdir -p input/docs input/tmp
+echo -e "alpha\nbeta" > input/docs/notesone.txt
+touch input/tmp/empty.txt
+
+# 复制并保留结构
+find input -name "*.txt" -exec cp --parents {} work/20240101/ \;
+# 权限设置
+find work/20240101 -type d -exec chmod 750 {} \;
+find work/20240101 -type f -exec chmod 640 {} \;
+
+# 生成清单
+find work/20240101 -type f -printf "%P %s\n" > inventory.txt
+\end{verbatim}
+
+\subsection{结果验证}
+执行 \texttt{ls -lR work/20240101} 查看文件结构；\texttt{cat inventory.txt} 显示如下：
+\begin{verbatim}
+input/docs/notesone.txt 12
+input/docs/secret.txt 7
+input/tmp/empty.txt 0
+\end{verbatim}
+权限与要求一致。
+
+\includegraphics[width=0.6\textwidth]{q01.png}
+
+\newpage
+
+% ==================== 第2题 ====================
+\section{随机访问日志统计}
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 创建 \texttt{q02} 目录，写入 \texttt{access.csv} 数据。
+    \item 编写 \texttt{analyze.sh} 脚本，包含参数检查和错误处理。
+    \item 使用 \texttt{awk} 统计 5xx 状态码的路径次数，并用 \texttt{sort}、\texttt{head} 输出前两名。
+    \item 使用第二个 \texttt{awk} 计算平均延迟，保留两位小数。
+    \item 分别对正常文件和不存在文件运行脚本，验证错误处理。
+\end{enumerate}
+
+\subsection{核心代码}
+\begin{verbatim}
+#!/bin/bash
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <csv_file>" >&2; exit 1
+fi
+if [ ! -f "$1" ]; then
+    echo "Error: File '$1' not found" >&2; exit 1
+fi
+
+# 5xx 路径统计
+awk -F',' 'NR>1 && ($4>=500 && $4<600) {count[$3]++} END {for(p in count) print count[p], p}' "$1" \
+| sort -k1,1nr -k2,2 | head -n 2
+
+# 平均延迟
+awk -F',' 'NR>1 {sum+=$5; n++} END {if(n>0) printf "%.2f\n", sum/n}' "$1"
+\end{verbatim}
+
+\subsection{运行结果}
+\begin{verbatim}
+$ ./analyze.sh access.csv
+2 /api/orders
+1 /api/users
+202.50
+\end{verbatim}
+对不存在文件执行时，输出错误信息至 stderr，退出码为 1。
+
+\includegraphics[width=0.6\textwidth]{q03.png}
+
+\newpage
+
+% ==================== 第3题 ====================
+\section{制造、解决并解释一次合并冲突}
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 在 \texttt{q03} 初始化 Git 仓库，创建 \texttt{config.txt} 内容 \texttt{mode ≡ normal} 并提交。
+    \item 创建 \texttt{feature-a} 分支，将内容改为 \texttt{mode ≡ safe} 并提交。
+    \item 回到 \texttt{main}，创建 \texttt{feature-b} 分支（基于初始 \texttt{main}），将内容改为 \texttt{mode ≡ fast} 并提交。
+    \item 在 \texttt{main} 上先合并 \texttt{feature-a}（无冲突），再合并 \texttt{feature-b}（产生冲突）。
+    \item 手动编辑 \texttt{config.txt}，保留 \texttt{mode ≡ safe} 并添加 \texttt{note ≡ reviewed}。
+    \item 标记解决并提交，查看提交图。
+\end{enumerate}
+
+\subsection{关键命令与冲突解决}
+\begin{verbatim}
+git init
+echo "mode ≡ normal" > config.txt && git add . && git commit -m "initial commit"
+
+git checkout -b feature-a
+echo "mode ≡ safe" > config.txt && git commit -am "change to safe mode"
+
+git checkout main
+git checkout -b feature-b
+echo "mode ≡ fast" > config.txt && git commit -am "change to fast mode"
+
+git checkout main
+git merge feature-a      # Fast-forward
+git merge feature-b      # CONFLICT
+# 编辑 config.txt 后
+echo -e "mode ≡ safe\nnote ≡ reviewed" > config.txt
+git add config.txt && git commit -m "merge feature-b, resolve conflict"
+
+
+
+
+
+\end{verbatim}
+
+\subsection{提交历史}
+\begin{verbatim}
+$ git log --all --graph --decorate --oneline
+*   abc1234 (HEAD -> main) merge feature-b, resolve conflict
+|\  
+| * def5678 (feature-b) change to fast mode
+* | ghi9012 (feature-a) change to safe mode
+|/  
+* jkl3456 initial commit
+\end{verbatim}
+冲突得到正确解决，工作区干净。
+
+\includegraphics[width=0.6\textwidth]{q03.png}
+
+\newpage
+
+% ==================== 第4题 ====================
+\section{修复并构建一页技术说明}
+
+\subsection{操作步骤}
+\begin{enumerate}
+    \item 在 \texttt{q04} 创建 \texttt{report.tex}，补全公式、表格及交叉引用。
+    \item 使用 \texttt{latexmk -xelatex -halt-on-error report.tex} 编译生成 PDF（需先安装 \texttt{texlive-lang-chinese} 并指定中文字体）。
+    \item 用 \texttt{xdg-open report.pdf} 预览，验证交叉引用正常。
+\end{enumerate}
+
+\subsection{LaTeX 源码要点}
+本报告即为该题的产物。核心要点如下：
+\begin{itemize}
+    \item 使用 \texttt{ctexart} 文档类或 \texttt{article}+\texttt{xeCJK} 支持中文。
+    \item 通过 \verb|\setCJKmainfont{Noto Serif CJK SC}| 指定系统字体。
+    \item 公式、表格均添加 \texttt{label} 并用 \verb|\ref|、\verb|\eqref| 引用。
+\end{itemize}
+示例：
+\begin{verbatim}
+\begin{equation}
+E = mc^2 \label{eq:energy}
+\end{equation}
+公式 \eqref{eq:energy} 是质能方程。
+\end{verbatim}
+
+\subsection{编译与输出}
+\begin{verbatim}
+$ latexmk -xelatex -halt-on-error report.tex
+$ ls -l report.pdf
+-rw-r--r-- 1 user user 12345 Aug 24 10:00 report.pdf
+\end{verbatim}
+
+\includegraphics[width=0.6\textwidth]{q04_code.png}
+
+打开 PDF 后，公式编号为 (1)，表格编号为 1，引用处显示正确数字，无“?”。
+
+\includegraphics[width=0.6\textwidth]{q04_effort.png}
+
+\newpage
+
+% ==================== 实验总结 ====================
+\section*{实验总结}
+\addcontentsline{toc}{section}{实验总结}
+
+通过本周实验，我不仅完成了规定的四项练习，还解决了 WSL 开发环境中工具链的配置问题:
+
+\begin{itemize}
+    \item 掌握了 Shell 命令进行文件批量处理、权限设置和清单生成。
+    \item 编写了健壮的日志分析脚本，灵活运用 awk、sort、head 等文本处理工具。
+    \item 熟悉了 Git 分支合并冲突的产生、解决与提交图查看。
+    \item 学会了配置 XeLaTeX + xeCJK 环境，成功编译出含中文、公式、表格及交叉引用的 PDF。
+\end{itemize}
+
+
+% ==================== 课后练习 ====================
+\section{课后练习}
+
+\subsection{练习1：ls -l 权限位解读}
+\textbf{命令：} \verb|ls -l /| \\
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{extra1.png}
+    \caption{ls -l / 输出示例}
+    \label{fig:extra1}
+\end{figure}
+\textbf{解题感悟：} 开头的10个字符中，第1位表示文件类型（如 \texttt{d} 目录，\texttt{-} 普通文件），后9位分为三组，分别代表所有者、组、其他人的读（r）、写（w）、执行（x）权限。这为我们理解文件安全打下了基础。
+
+\subsection{练习2：glob 模式实验}
+\textbf{命令：}
+\begin{verbatim}
+mkdir -p test_glob && cd test_glob
+touch file1.txt file2.txt file3.log abc.txt a.txt b.txt c.txt
+ls *.txt
+ls file?.txt
+ls {a,b,c}.txt
+\end{verbatim}
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{extra2.png}
+    \caption{glob 模式匹配结果}
+    \label{fig:extra2}
+\end{figure}
+\textbf{解题感悟：} \texttt{*} 匹配任意字符串，\texttt{?} 匹配单个字符，\texttt{\{\}} 提供选择列表。globbing 是 Shell 中非常高效的路径匹配方式。
+
+\subsection{练习3：引号的区别}
+\textbf{命令：}
+\begin{verbatim}
+echo 'Hello $USER !\n'
+echo "Hello $USER !\n"
+echo $'Hello $USER !\n'
+\end{verbatim}
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{extra3.png}
+    \caption{三种引号输出对比}
+    \label{fig:extra3}
+\end{figure}
+\textbf{解题感悟：} 单引号保留字面量，双引号允许变量和命令替换，ANSI 引号支持转义序列（如 \verb|\n| 换行）。理解这一点对编写安全的脚本至关重要。
+
+\subsection{练习4：标准流重定向}
+\textbf{命令：}
+\begin{verbatim}
+ls /nonexistent /tmp > stdout.txt 2> stderr.txt
+ls /nonexistent /tmp > both.txt 2>&1
+\end{verbatim}
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{extra4.png}
+    \caption{重定向输出文件内容}
+    \label{fig:extra4}
+\end{figure}
+\textbf{解题感悟：} 通过 \verb|>| 和 \verb|2>| 可以分别捕获标准输出和标准错误，而 \verb|2>&1| 可将错误合并到标准输出。这对于日志记录和调试非常有用。
+
+\subsection{练习5：条件创建目录}
+\textbf{命令：} \verb|[ -d /tmp/mydir ] || mkdir /tmp/mydir && echo "创建成功或已存在"| \\
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{extra5.png}
+    \caption{两次执行的结果}
+    \label{fig:extra5}
+\end{figure}
+\textbf{解题感悟：} \verb|$?| 保存上一条命令的退出状态，\verb|&&| 和 \verb||| 利用这一点实现条件执行。这是编写健壮脚本的基础。
+
+\subsection{练习6：文件存在性检查脚本}
+\textbf{脚本内容：}
+\begin{verbatim}
+#!/bin/bash
+if [ -f "$1" ]; then
+    echo "文件 $1 存在"
+else
+    echo "文件 $1 不存在"
+fi
+\end{verbatim}
+\textbf{运行结果：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{extra6.png}
+    \caption{check.sh 执行效果}
+    \label{fig:extra6}
+\end{figure}
+\textbf{解题感悟：} 使用 \verb|[ -f ... ]| 判断普通文件，结合 \verb|$1| 接收参数。注意脚本必须具有执行权限（\verb|chmod +x|）才能直接运行。
+
+\subsection{练习7：使用 set -x 调试}
+\textbf{脚本内容：}
+\begin{verbatim}
+#!/bin/bash
+set -x
+echo "Hello"
+ls /tmp
+set +x
+echo "Done"
+\end{verbatim}
+\textbf{运行截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{extra7.png}
+    \caption{set -x 输出的调试信息}
+    \label{fig:extra7}
+\end{figure}
+\textbf{解题感悟：} \verb|set -x| 会打印每条执行的命令及其参数，是快速定位脚本问题的利器。
+
+\subsection{练习8：备份文件带日期}
+\textbf{命令：} \verb|cp notes.txt notes_$(date +%Y-%m-%d).txt| \\
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{extra8.png}
+    \caption{生成的带日期备份文件}
+    \label{fig:extra8}
+\end{figure}
+\textbf{解题感悟：} 命令替换 \verb|$(...)| 允许将命令输出嵌入到另一个命令的参数中，非常适合自动化任务。
+
+\subsection{练习9：find + xargs 统计行数}
+\textbf{命令：} \verb|find . -name "*.sh" -print0 | xargs -0 wc -l| \\
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{extra9.png}
+    \caption{统计各 .sh 文件的行数}
+    \label{fig:extra9}
+\end{figure}
+\textbf{解题感悟：} \verb|-print0| 和 \verb|-0| 能正确处理文件名中的空格，保证管道传输的健壮性。
+
+\subsection{练习10：Git 查看修改者信息}
+\textbf{命令：}
+\begin{verbatim}
+git clone https://github.com/missing-semester/missing-semester.git
+cd missing-semester
+git log -1 --pretty=format:"%an" README.md
+git blame README.md | head -5
+\end{verbatim}
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{extra10.png}
+    \caption{git log 和 git blame 输出}
+    \label{fig:extra10}
+\end{figure}
+\textbf{解题感悟：} \verb|git log| 可以查看提交历史，\verb|git blame| 逐行显示每行最后一次修改的提交信息，对代码溯源非常有用。
+
+\subsection{练习11：设置 Git 别名}
+\textbf{命令：}
+\begin{verbatim}
+git config --global alias.graph "log --all --graph --decorate --oneline"
+git graph
+\end{verbatim}
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{extra11.png}
+    \caption{git graph 别名输出}
+    \label{fig:extra11}
+\end{figure}
+\textbf{解题感悟：} Git 别名可以大幅简化常用复杂命令的输入，提升效率。
+
+\subsection{练习12：设置全局 .gitignore}
+\textbf{命令：}
+\begin{verbatim}
+git config --global core.excludesfile ~/.gitignore_global
+echo ".DS_Store" >> ~/.gitignore_global
+echo "*.log" >> ~/.gitignore_global
+cat ~/.gitignore_global
+\end{verbatim}
+\textbf{结果截图：}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{extra12.png}
+    \caption{全局忽略文件内容}
+    \label{fig:extra12}
+\end{figure}
+\textbf{解题感悟：} 全局 \verb|.gitignore| 避免了在多个仓库重复配置，统一忽略系统或编辑器生成的临时文件。
+
