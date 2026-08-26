@@ -9,11 +9,31 @@
 \usepackage{caption}
 \captionsetup{font=small,labelfont=bf}
 \usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
 
-% ---------- 设置中文字体（使用系统已安装的 Noto 字体） ----------
-\setCJKmainfont{Noto Serif CJK SC}     % 正文宋体
-\setCJKsansfont{Noto Sans CJK SC}      % 无衬线
-\setCJKmonofont{Noto Sans Mono CJK SC} % 等宽
+% ---------- 代码块样式（与第二周一致） ----------
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    tabsize=4,
+    xleftmargin=2em,
+    xrightmargin=2em,
+}
+
+% ---------- 中文字体 ----------
+\setCJKmainfont{Noto Serif CJK SC}
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
 
 % ---------- 页眉页脚 ----------
 \pagestyle{fancy}
@@ -36,7 +56,6 @@
     {\Huge\bfseries 系统开发工具基础} \\[0.5cm]
     {\LARGE 每周课上实验报告} \\[0.8cm]
     {\large 第一周（2026年8月24日）} \\[2cm]
-    % 没有logo，注释掉 \\[1cm] % 若无 logo 可注释或删除
     \large
     \begin{tabular}{rl}
         姓\qquad 名： & 李永铖 \\
@@ -61,15 +80,15 @@
     \item LaTeX 引擎：XeLaTeX（通过 latexmk 调用）
     \item 中文宏包：xeCJK（需安装 texlive-lang-chinese）
     \item 中文字体：Noto Serif CJK SC / Noto Sans CJK SC
-    \end{itemize}
+\end{itemize}
 
 \subsection*{遇到的问题与解决}
 \begin{enumerate}
-    \item \textbf{Git 未安装}：WSL 初始未包含 git，使用 \texttt{sudo apt install git} 安装。
-    \item \textbf{latexmk 可用但默认调用 pdflatex}：通过命令 \texttt{latexmk -xelatex} 指定 XeLaTeX 引擎，以支持 Unicode 中文。
-    \item \textbf{中文宏包缺失（xeCJK.sty 未找到）}：安装 \texttt{texlive-lang-chinese} 后，再运行 \texttt{sudo texhash} 更新文件名数据库，即可被识别。
-    \item \textbf{中文字体配置}：系统默认无中文字体，安装 \texttt{fonts-noto-cjk} 后，在 LaTeX 中用 \verb+[ -d /tmp/mydir ] || mkdir /tmp/mydir && echo "创建成功或已存在"+ 等命令指定。
-    \item \textbf{编译器务必选 XeLaTeX}：在 Overleaf 或本地均需切换至 XeLaTeX，否则 Unicode 字符报错。
+    \item \textbf{Git 未安装}：使用 \texttt{sudo apt install git} 安装。
+    \item \textbf{latexmk 默认调用 pdflatex}：通过 \texttt{latexmk -xelatex} 指定引擎。
+    \item \textbf{xeCJK.sty 缺失}：安装 \texttt{texlive-lang-chinese} 并执行 \texttt{sudo texhash}。
+    \item \textbf{中文字体未配置}：安装 \texttt{fonts-noto-cjk} 并用 \verb|\setCJKmainfont| 指定。
+    \item \textbf{编译器必须为 XeLaTeX}：否则 Unicode 字符报错。
 \end{enumerate}
 
 \newpage
@@ -88,7 +107,7 @@
 \end{enumerate}
 
 \subsection{核心命令}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 # 创建目录与文件
 mkdir -p input/docs input/tmp
 echo -e "alpha\nbeta" > input/docs/notesone.txt
@@ -102,17 +121,16 @@ find work/20240101 -type f -exec chmod 640 {} \;
 
 # 生成清单
 find work/20240101 -type f -printf "%P %s\n" > inventory.txt
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{结果验证}
 执行 \texttt{ls -lR work/20240101} 查看文件结构；\texttt{cat inventory.txt} 显示如下：
-\begin{verbatim}
+\begin{lstlisting}
 input/docs/notesone.txt 12
 input/docs/secret.txt 7
 input/tmp/empty.txt 0
-\end{verbatim}
+\end{lstlisting}
 权限与要求一致。
-
 \includegraphics[width=0.6\textwidth]{q01.png}
 
 \newpage
@@ -130,7 +148,7 @@ input/tmp/empty.txt 0
 \end{enumerate}
 
 \subsection{核心代码}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 #!/bin/bash
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <csv_file>" >&2; exit 1
@@ -145,18 +163,17 @@ awk -F',' 'NR>1 && ($4>=500 && $4<600) {count[$3]++} END {for(p in count) print 
 
 # 平均延迟
 awk -F',' 'NR>1 {sum+=$5; n++} END {if(n>0) printf "%.2f\n", sum/n}' "$1"
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{运行结果}
-\begin{verbatim}
+\begin{lstlisting}
 $ ./analyze.sh access.csv
 2 /api/orders
 1 /api/users
 202.50
-\end{verbatim}
+\end{lstlisting}
 对不存在文件执行时，输出错误信息至 stderr，退出码为 1。
-
-\includegraphics[width=0.6\textwidth]{q03.png}
+\includegraphics[width=0.6\textwidth]{q02.png}
 
 \newpage
 
@@ -174,7 +191,7 @@ $ ./analyze.sh access.csv
 \end{enumerate}
 
 \subsection{关键命令与冲突解决}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 git init
 echo "mode ≡ normal" > config.txt && git add . && git commit -m "initial commit"
 
@@ -191,15 +208,10 @@ git merge feature-b      # CONFLICT
 # 编辑 config.txt 后
 echo -e "mode ≡ safe\nnote ≡ reviewed" > config.txt
 git add config.txt && git commit -m "merge feature-b, resolve conflict"
-
-
-
-
-
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{提交历史}
-\begin{verbatim}
+\begin{lstlisting}
 $ git log --all --graph --decorate --oneline
 *   abc1234 (HEAD -> main) merge feature-b, resolve conflict
 |\  
@@ -207,9 +219,8 @@ $ git log --all --graph --decorate --oneline
 * | ghi9012 (feature-a) change to safe mode
 |/  
 * jkl3456 initial commit
-\end{verbatim}
+\end{lstlisting}
 冲突得到正确解决，工作区干净。
-
 \includegraphics[width=0.6\textwidth]{q03.png}
 
 \newpage
@@ -228,28 +239,26 @@ $ git log --all --graph --decorate --oneline
 本报告即为该题的产物。核心要点如下：
 \begin{itemize}
     \item 使用 \texttt{ctexart} 文档类或 \texttt{article}+\texttt{xeCJK} 支持中文。
-    \item 通过 \verb+[ -d /tmp/mydir ] || mkdir /tmp/mydir && echo "创建成功或已存在"+ 指定系统字体。
-    \item 公式、表格均添加 \texttt{label} 并用 \verb+[ -d /tmp/mydir ] || mkdir /tmp/mydir && echo "创建成功或已存在"+、\verb|\eqref| 引用。
+    \item 通过 \verb|\setCJKmainfont{Noto Serif CJK SC}| 指定系统字体。
+    \item 公式、表格均添加 \texttt{label} 并用 \verb|\ref|、\verb|\eqref| 引用。
 \end{itemize}
 示例：
-\begin{verbatim}
+\begin{lstlisting}[language=tex]
 \begin{equation}
 E = mc^2 \label{eq:energy}
 \end{equation}
 公式 \eqref{eq:energy} 是质能方程。
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{编译与输出}
-\begin{verbatim}
+\begin{lstlisting}
 $ latexmk -xelatex -halt-on-error report.tex
 $ ls -l report.pdf
 -rw-r--r-- 1 user user 12345 Aug 24 10:00 report.pdf
-\end{verbatim}
-
+\end{lstlisting}
 \includegraphics[width=0.6\textwidth]{q04_code.png}
 
 打开 PDF 后，公式编号为 (1)，表格编号为 1，引用处显示正确数字，无“?”。
-
 \includegraphics[width=0.6\textwidth]{q04_effort.png}
 
 \newpage
@@ -258,7 +267,7 @@ $ ls -l report.pdf
 \section*{实验总结}
 \addcontentsline{toc}{section}{实验总结}
 
-通过本周实验，我不仅完成了规定的四项练习，还解决了 WSL 开发环境中工具链的配置问题:
+通过本周实验，我不仅完成了规定的四项练习，还解决了 WSL 开发环境中工具链的配置问题：
 
 \begin{itemize}
     \item 掌握了 Shell 命令进行文件批量处理、权限设置和清单生成。
@@ -291,13 +300,13 @@ $ ls -l report.pdf
 \subsection*{练习2：glob 模式实验}
 \textbf{练习描述：} 本练习通过创建测试目录和文件，使用不同的 glob 模式（\texttt{*}、\texttt{?}、\texttt{\{\}}）进行文件匹配，观察 Shell 如何展开通配符。
 \textbf{命令：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 mkdir -p test_glob && cd test_glob
 touch file1.txt file2.txt file3.log abc.txt a.txt b.txt c.txt
 ls *.txt
 ls file?.txt
 ls {a,b,c}.txt
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{extra2.png}
@@ -309,11 +318,11 @@ ls {a,b,c}.txt
 \subsection*{练习3：引号的区别}
 \textbf{练习描述：} 本练习对比单引号、双引号和 ANSI-C 引号在 Shell 中的表现，观察变量展开、转义序列处理等差异。
 \textbf{命令：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 echo 'Hello $USER !\n'
 echo "Hello $USER !\n"
 echo $'Hello $USER !\n'
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{extra3.png}
@@ -325,10 +334,10 @@ echo $'Hello $USER !\n'
 \subsection*{练习4：标准流重定向}
 \textbf{练习描述：} 本练习通过运行 \texttt{ls} 命令分别重定向标准输出和标准错误到不同文件，再合并重定向到同一文件，演示了 Shell 重定向机制。
 \textbf{命令：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 ls /nonexistent /tmp > stdout.txt 2> stderr.txt
 ls /nonexistent /tmp > both.txt 2>&1
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{extra4.png}
@@ -351,14 +360,14 @@ ls /nonexistent /tmp > both.txt 2>&1
 \subsection*{练习6：文件存在性检查脚本}
 \textbf{练习描述：} 编写一个 Shell 脚本，接收一个文件名参数，使用 \texttt{[ -f ... ]} 判断该文件是否为普通文件并存在，输出相应提示。
 \textbf{脚本内容：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 #!/bin/bash
 if [ -f "$1" ]; then
     echo "文件 $1 存在"
 else
     echo "文件 $1 不存在"
 fi
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{extra6.png}
@@ -370,14 +379,14 @@ fi
 \subsection*{练习7：使用 set -x 调试}
 \textbf{练习描述：} 本练习通过 \texttt{set -x} 开启跟踪模式，观察脚本执行过程中每条命令的展开与执行情况。
 \textbf{脚本内容：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 #!/bin/bash
 set -x
 echo "Hello"
 ls /tmp
 set +x
 echo "Done"
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{extra7.png}
@@ -412,12 +421,12 @@ echo "Done"
 \subsection*{练习10：Git 查看修改者信息}
 \textbf{练习描述：} 本练习克隆一个真实仓库，使用 \texttt{git log} 和 \texttt{git blame} 查看文件的最后修改者和每行的修改细节。
 \textbf{命令：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 git clone https://github.com/missing-semester/missing-semester.git
 cd missing-semester
 git log -1 --pretty=format:"%an" README.md
 git blame README.md | head -5
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{extra10.png}
@@ -429,10 +438,10 @@ git blame README.md | head -5
 \subsection*{练习11：设置 Git 别名}
 \textbf{练习描述：} 本练习通过 \texttt{git config} 创建一个自定义别名 \texttt{git graph}，将复杂的 \texttt{log} 命令简化为一个单词，提高日常工作效率。
 \textbf{命令：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 git config --global alias.graph "log --all --graph --decorate --oneline"
 git graph
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{extra11.png}
@@ -444,12 +453,12 @@ git graph
 \subsection*{练习12：设置全局 .gitignore}
 \textbf{练习描述：} 本练习设置全局 Git 忽略文件，避免在每个仓库中重复配置忽略规则（如 macOS 的 \texttt{.DS\_Store} 和日志文件）。
 \textbf{命令：}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 git config --global core.excludesfile ~/.gitignore_global
 echo ".DS_Store" >> ~/.gitignore_global
 echo "*.log" >> ~/.gitignore_global
 cat ~/.gitignore_global
-\end{verbatim}
+\end{lstlisting}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{extra12.png}
@@ -457,5 +466,61 @@ cat ~/.gitignore_global
     \label{fig:extra12}
 \end{figure}
 \textbf{解题感悟：} 全局 \texttt{.gitignore} 文件路径通过 \texttt{core.excludesfile} 指定，所有仓库都会忽略其中列出的文件模式（如 macOS 的 \texttt{.DS\_Store} 和日志文件 \texttt{*.log}）。这避免了每个仓库重复配置，保持干净整洁。
+
+\newpage
+
+% ==================== Git 仓库与版本管理 ====================
+\section*{Git 仓库与版本管理}
+\addcontentsline{toc}{section}{Git 仓库与版本管理}
+
+本次实验的所有代码、脚本和报告均已上传至个人 GitHub 仓库，并遵循增量提交原则（每个题目单独 commit，禁止单次全量提交）。
+
+\subsection*{仓库地址}
+\begin{center}
+    \url{https://github.com/lhbyc0718/system_tool_learning}
+\end{center}
+
+\subsection*{提交记录}
+\begin{itemize}
+    \item 每次实验完成后均进行增量提交，每个题目单独 commit。
+    \item 提交信息清晰描述改动内容（如“完成第1题：含空格文件名批量整理”）。
+    \item 报告、代码、脚本分类存放，目录结构规范。
+\end{itemize}
+
+\subsection*{commit 记录截图}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{git_commits.png}
+    \caption{GitHub 仓库 commit 记录}
+    \label{fig:git_commits}
+\end{figure}
+
+\subsection*{常用 Git 命令（本次使用）}
+\begin{lstlisting}[language=bash]
+# 克隆仓库
+git clone https://github.com/lhbyc0718/system_tool_learning.git
+
+# 查看状态
+git status
+
+# 添加改动（按题目分批次添加）
+git add q01/
+git commit -m "完成第1题：含空格文件名批量整理"
+
+git add q02/
+git commit -m "完成第2题：随机访问日志统计"
+
+git add q03/
+git commit -m "完成第3题：制造并解决合并冲突"
+
+git add q04/
+git commit -m "完成第4题：修复并构建技术说明"
+
+# 推送至远程
+git push origin main
+
+# 查看提交历史（图形化）
+git log --oneline --graph --all
+\end{lstlisting}
 
 \end{document}
