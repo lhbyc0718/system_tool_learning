@@ -1,0 +1,2 @@
+[console_scripts]
+myhello = mypkg:hello

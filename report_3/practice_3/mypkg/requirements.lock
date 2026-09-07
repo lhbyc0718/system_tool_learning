@@ -1,0 +1,6 @@
+certifi==2026.7.22
+charset-normalizer==3.5.1
+idna==3.19
+-e git+https://github.com/lhbyc0718/system_tool_learning.git@c4a3a643cf2598b859393468d2af03cad5ed996a#egg=mypkg_25030021039&subdirectory=report_3/practice_3/mypkg
+requests==2.34.2
+urllib3==2.7.0

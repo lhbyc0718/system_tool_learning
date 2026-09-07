@@ -1,0 +1,7 @@
+pyproject.toml
+src/mypkg/__init__.py
+src/mypkg_25030021039.egg-info/PKG-INFO
+src/mypkg_25030021039.egg-info/SOURCES.txt
+src/mypkg_25030021039.egg-info/dependency_links.txt
+src/mypkg_25030021039.egg-info/entry_points.txt
+src/mypkg_25030021039.egg-info/top_level.txt
