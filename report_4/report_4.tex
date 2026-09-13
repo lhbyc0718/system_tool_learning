@@ -155,11 +155,14 @@ All checks passed!
 \subsection{演示截图}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{q13_check.png}
+    \includegraphics[width=0.85\textwidth]{q011.png}
     \caption{check.sh 全部通过}
     \label{fig:q13_check}
 \end{figure}
-
+\par
+\includegraphics[width=0.85\textwidth]{q012.png}
+\par
+\includegraphics[width=0.85\textwidth]{q013.png}
 \newpage
 
 % ==================== 第14题 ====================
@@ -217,7 +220,7 @@ rm -f stats.txt report.txt
 \subsection{演示截图}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{q14_make.png}
+    \includegraphics[width=0.85\textwidth]{q021.png}
     \caption{Make 增量构建验证}
     \label{fig:q14_make}
 \end{figure}
@@ -278,11 +281,14 @@ $ cat summary.md
 \subsection{演示截图}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{q15_report.png}
+    \includegraphics[width=0.85\textwidth]{q031.png}
     \caption{HTTP 服务与 summary.md 生成}
     \label{fig:q15_report}
 \end{figure}
-
+\par
+\includegraphics[width=0.85\textwidth]{q032.png}
+\par
+\includegraphics[width=0.85\textwidth]{q033.png}
 \newpage
 
 % ==================== 第16题 ====================
@@ -335,13 +341,19 @@ b9e72f2 Initial commit: copy from q13 with quality gate
 \subsection{演示截图}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{q16_build.png}
+    \includegraphics[width=0.85\textwidth]{q041.png}
     \caption{make build 与 SHA-256}
     \label{fig:q16_build}
 \end{figure}
+\par
+\includegraphics[width=0.85\textwidth]{q042.png}
+\par
+\includegraphics[width=0.85\textwidth]{q043.png}
+\par
+\includegraphics[width=0.85\textwidth]{q044.png}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{q16_git.png}
+    \includegraphics[width=0.85\textwidth]{git_commits_week4.png}
     \caption{Git 提交记录}
     \label{fig:q16_git}
 \end{figure}
@@ -375,7 +387,10 @@ Found 3 errors.
 $ ruff check messy.py --fix
 Found 2 errors (2 fixed, 0 remaining).
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p011.png}
+\par
+\includegraphics[width=0.85\textwidth]{p012.png}
 \textbf{解题感悟}：ruff format 与 ruff check 各司其职，前者管格式，后者管语义；\texttt{--fix} 能自动处理大部分机械问题。
 
 \vspace{0.3cm}
@@ -404,7 +419,12 @@ ruff check.......................................................Passed
 ruff format......................................................Passed
 [master (root-commit) 1489fbc] fix style
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p021.png}
+\par
+\includegraphics[width=0.85\textwidth]{p022.png}
+\par
+\includegraphics[width=0.85\textwidth]{p023.png}
 \textbf{解题感悟}：pre-commit 修改文件后，Git 不会自动把修改纳入提交，必须再 \texttt{git add} 一次；`--fix` 与 `format` 互相影响时，重复一次即可。
 
 \vspace{0.3cm}
@@ -424,7 +444,10 @@ test_calc.py       5      0   100%
 --------------------------------------------
 TOTAL             15      4    73%
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p031.png}
+\par
+\includegraphics[width=0.85\textwidth]{p032.png}
 \textbf{解题感悟}：\texttt{coverage report -m} 直接列出未覆盖行号，\texttt{coverage html} 生成逐行高亮的网页，非常便于定位缺失的测试。
 
 \vspace{0.3cm}
@@ -436,7 +459,8 @@ TOTAL             15      4    73%
 \textbf{操作步骤}：造两个含危险调用的文件，分别用 \texttt{[^)]*} 与 \texttt{.*} 两种 pattern 匹配。
 
 \textbf{结果}：两种 pattern 都匹配到 \texttt{code1.py:2} 和 \texttt{code2.py:2}；但在更复杂的嵌套调用中，\texttt{[^)]*} 比 \texttt{.*} 更精确。
-
+\par
+\includegraphics[width=0.85\textwidth]{p041.png}
 \textbf{解题感悟}：\texttt{[^)]*} 表达“非右括号的任意字符”，比 \texttt{.*} 更不容易跨函数边界误匹配。
 
 \vspace{0.3cm}
@@ -456,7 +480,8 @@ grep -oP '"name":\s*".*"' data.json
 Alyssa P. Hacker
 "name": "Alyssa P. Hacker", "college": "MIT"
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p051.png}
 \textbf{解题感悟}：\texttt{.*} 默认贪婪，会一直吃到最后一个引号；改用 \texttt{[^"]+} 或非贪婪 \texttt{.*?} 才能得到正确结果。
 
 \vspace{0.3cm}
@@ -472,7 +497,8 @@ echo '{"name": "Alyssa \"Q\" Hacker", "college": "MIT"}' | \
 \end{lstlisting}
 
 \textbf{结果}：\texttt{Alyssa "Q" Hacker}
-
+\par
+\includegraphics[width=0.85\textwidth]{p061.png}
 \textbf{解题感悟}：JSON 解析器天然处理转义、嵌套、编码问题，正则做不到；复杂解析问题应优先使用解析器。
 
 \vspace{0.3cm}
@@ -491,7 +517,8 @@ cp input.txt output.txt
 $ make clean
 rm -f output.txt
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p071.png}
 \textbf{解题感悟}：\texttt{.PHONY} 避免伪目标与同名文件冲突；\texttt{clean} 只删生成物，保留源文件。
 
 \vspace{0.3cm}
@@ -509,7 +536,8 @@ cp: -r not specified; omitting directory 'input.txt'
 make: *** [Makefile:6: output.txt] Error 1
 >>> 提交被 pre-commit 拦截，符合预期
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p081.png}
 \textbf{解题感悟}：\texttt{set -e} 保证任意一步失败即退出；把构建步骤放入 pre-commit 能有效避免提交不可构建的版本。
 
 \vspace{0.3cm}
@@ -531,7 +559,8 @@ Name   Version  Downloads
 alpha  1.2.0    120
 gamma  1.5.1    450
 \end{lstlisting}
-
+\par
+\includegraphics[width=0.85\textwidth]{p091.png}
 \textbf{解题感悟}：\texttt{@tsv} 搭配 \texttt{column -t} 可以快速得到对齐表格；Debian 下 \texttt{column} 需安装 \texttt{bsdextrautils}。
 
 \vspace{0.3cm}
@@ -552,7 +581,8 @@ In bad.sh line 3:
        ^-- SC2086 (info): Double quote to prevent globbing.
 \end{lstlisting}
 修复后 \texttt{shellcheck good.sh} 通过。
-
+\par
+\includegraphics[width=0.85\textwidth]{p101.png}
 \textbf{解题感悟}：shellcheck 能捕捉 \texttt{\$(ls)} 解析、变量未加引号等常见陷阱，是 shell 脚本的必备工具。
 
 \vspace{0.3cm}
@@ -570,7 +600,12 @@ In bad.sh line 3:
 \end{enumerate}
 
 \textbf{结果}：自动修复后剩 \texttt{F841 Local variable `unused' is assigned to but never used}，属于需人工判断的语义问题。
-
+\par
+\includegraphics[width=0.85\textwidth]{p111.png}
+\par
+\includegraphics[width=0.85\textwidth]{p112.png}
+\par
+\includegraphics[width=0.85\textwidth]{p113.png}
 \textbf{解题感悟}：\texttt{--fix} 只能处理机械问题；未使用变量等涉及语义的，需要人（或 agent）分析后修改。
 
 \vspace{0.3cm}
@@ -597,7 +632,10 @@ TOTAL             23      0   100%
 \end{lstlisting}
 
 \textbf{解题感悟}：异常分支常被忽略，但正是这些分支最容易隐藏缺陷；补齐异常测试对提升覆盖率贡献最大。
-
+\par
+\includegraphics[width=0.85\textwidth]{p121.png}
+\par
+\includegraphics[width=0.85\textwidth]{p122.png}
 \vspace{0.5cm}
 
 以上 12 项练习从代码质量、正则、元编程、命令行工具等维度巩固了本周内容，与四道课上检查题形成互补。
@@ -647,7 +685,7 @@ TOTAL             23      0   100%
 \subsection*{commit 记录截图}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{git_commits_week4.png}
+    \includegraphics[width=0.9\textwidth]{git_commits_week4_p.png}
     \caption{GitHub 仓库 commit 记录（第四周）}
     \label{fig:git_commits_week4}
 \end{figure}
